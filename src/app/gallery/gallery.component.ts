@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from '../firebase.service';
 
 @Component({
   selector: 'app-gallery',
@@ -6,23 +7,29 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent implements OnInit {
-  vehicles = [
-    { id: 1, src: 'http://placehold.it/400x300' },
-    { id: 2, src: 'http://placehold.it/400x300' },
-    { id: 3, src: 'http://placehold.it/400x300' },
-    { id: 4, src: 'http://placehold.it/400x300' },
-    { id: 5, src: 'http://placehold.it/400x300' },
-    { id: 6, src: 'http://placehold.it/400x300' },
-    { id: 7, src: 'http://placehold.it/400x300'}
-  ];
+  vehicles: any[];
 
   viewGallery = true;
   newGallery = false;
   detailGallery = false;
 
-  constructor() { }
+  constructor(
+    private firebaseService: FirebaseService
+  ) { }
 
   ngOnInit() {
+    this.getGallery();
+  }
+
+  getGallery() {
+    this.firebaseService.getGalleries()
+    .subscribe(response => {
+      console.log(response);
+      this.vehicles = response.data;
+    }, err => {
+      console.log(err);
+      alert(err.message);
+    });
   }
 
   createGallery() {
