@@ -10,7 +10,12 @@ export class FirebaseService {
   constructor(public fireGallery: AngularFirestore) { }
 
   getDetailGallery(galleryId) {
-    return this.fireGallery.collection('gallery').doc(galleryId).snapshotChanges();
+    return this.fireGallery.collection('gallery').doc(galleryId).snapshotChanges().pipe(
+      map(result => {
+        const data = Object.assign({ 'id': result.payload.id }, result.payload.data());
+        return { data };
+      })
+    );
   }
 
   getGalleries() {

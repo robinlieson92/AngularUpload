@@ -13,12 +13,15 @@ export class GalleryComponent implements OnInit {
   newGallery = false;
   detailGallery = false;
 
+  id_gallery: string;
+
   constructor(
     private firebaseService: FirebaseService
   ) { }
 
   ngOnInit() {
     this.getGallery();
+    this.id_gallery = '';
   }
 
   getGallery() {
@@ -42,7 +45,7 @@ export class GalleryComponent implements OnInit {
     this.detailGallery = true;
     this.newGallery = false;
     this.viewGallery = false;
-    console.log(id_gallery);
+    this.id_gallery = id_gallery;
   }
 
   backEvent(event) {

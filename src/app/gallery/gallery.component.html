@@ -1,9 +1,9 @@
 <div class="container">
-  <h1 class="my-4 text-center">Vehicle Gallery</h1>
+  <h2 class="my-4 text-center">Vehicle Gallery</h2>
   <button class="btn btn-primary my-4" *ngIf="viewGallery" (click)="createGallery()">New Vehicle Gallery</button>
 
   <div class="row text-center text-lg-left" *ngIf="viewGallery">
-    <div class="col-lg-3 col-md-4 col-xs-6" *ngFor="let vehicle of vehicles">
+    <div class="col-lg-4 col-md-4 col-xs-6" *ngFor="let vehicle of vehicles">
       <a class="d-block mb-4 h-100" (click)="showGallery(vehicle.id)">
         <img class="img-fluid img-thumbnail" [src]="vehicle.image" alt="">
       </a>
@@ -13,4 +13,4 @@
 
 <app-new-gallery *ngIf="newGallery" (back)="backEvent($event)"></app-new-gallery>
 
-<app-detail-gallery *ngIf="detailGallery"></app-detail-gallery>
+<app-detail-gallery *ngIf="detailGallery && id_gallery" (back)="backEvent($event)" [id]="id_gallery"></app-detail-gallery>
