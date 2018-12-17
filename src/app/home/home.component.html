@@ -1,0 +1,22 @@
+<nav class="navbar navbar-light bg-light">
+  <span class="navbar-brand mb-0 h1">Angular Vehicle Information</span>
+
+  <div class="header-name">
+    <img *ngIf='user.name' class="align-top image" alt="" [src]="user.image" alt="Card image cap">
+    <h4 *ngIf='user.name' class="username">{{user.name}}</h4>
+    <form *ngIf='!user.name' class="form-inline" [formGroup]="profileForm" method="post" role="form" (ngSubmit)="saveProfile()">
+      <div class="form-group">        
+        <input type="text" id="name" formControlName="name" class="form-control mr-sm-2" 
+          [ngClass]="{ 'is-invalid': submitted && fuser.name.errors }" placeholder="Your Name">
+        <div *ngIf="submitted && fuser.name.errors" class="invalid-feedback">
+          <div *ngIf="fuser.name.errors.required">Name is required.</div>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Save</button>      
+    </form>
+  </div>
+  <button class="btn btn-outline-primary my-2 my-sm-0" type="button" (click)="logout()">Logout</button>
+</nav>
+
+<app-gallery></app-gallery>
