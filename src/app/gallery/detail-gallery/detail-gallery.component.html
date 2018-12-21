@@ -3,7 +3,24 @@
   
   <div class="row">
     <div class="card">
-      <img class="card-img-top" src="{{vehicle?.image}}" alt="Card image cap">
+      <div *ngIf="!showVideo">
+        <img class="card-img-top" src="{{vehicle?.image}}" alt="Card image cap" (click)="playVideo()" data-toggle="tooltip" data-placement="right" title="Click to Play Video">
+      </div>
+
+      <div *ngIf="showVideo">
+        <video class="card-img-top" controls autoplay id="video_vehicle" #video_vehicle>
+          <source src="{{vehicle?.video}}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <br>
+
+        <audio controls>          
+          <source src="{{vehicle?.audio}}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><b>Brand: </b> {{vehicle?.brand}}</li>
         <li class="list-group-item"><b>Model: </b> {{vehicle?.model}}</li>

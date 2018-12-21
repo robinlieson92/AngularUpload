@@ -20,8 +20,14 @@ export class NewGalleryComponent implements OnInit {
   errorMessage: string;
   submitted = false;
   picture_upload: File;
+  video_upload: File;
+  audio_upload: File;
   picture_path: Observable<string>;
+  video_path: Observable<string>;
+  audio_path: Observable<string>;
   picture_url: string;
+  video_url: string;
+  audio_url: string;
 
   constructor(
     private router: Router,
@@ -36,7 +42,9 @@ export class NewGalleryComponent implements OnInit {
       brand: ['', Validators.required],
       model: ['', Validators.required],
       vehicle_number: ['', Validators.required],
-      picture: ['', Validators.required]
+      picture: ['', Validators.required],
+      video: ['', Validators.required],
+      audio: ['', Validators.required]
     });
   }
 
@@ -55,42 +63,91 @@ export class NewGalleryComponent implements OnInit {
     }
   }
 
+  uploadVideoEvent(videoInput: any) {
+    if (videoInput.target.files && videoInput.target.files[0]) {
+      this.video_upload = videoInput.target.files[0];
+      console.log(this.video_upload);
+    } else {
+      this.video_upload = null;
+    }
+  }
+
+  uploadAudioEvent(audioInput: any) {
+    if (audioInput.target.files && audioInput.target.files[0]) {
+      this.audio_upload = audioInput.target.files[0];
+      console.log(this.audio_upload);
+    } else {
+      this.audio_upload = null;
+    }
+  }
+
   uploadGallery() {
     this.submitted = true;
 
     if (this.uploadForm.valid) {
-      if (this.picture_upload) {
-        const filePath = 'images/' + this.picture_upload.name;
-        const fileRef = this.firebaseStorage.ref(filePath);
-        const task = this.firebaseStorage.upload(filePath, this.picture_upload);
+      if (this.video_upload) {
+        const videoPath = 'video_test/' + this.video_upload.name;
+        const videoRef = this.firebaseStorage.ref(videoPath);
+        const taskVideoUpload = this.firebaseStorage.upload(videoPath, this.video_upload);
 
-        task.snapshotChanges().pipe(
+        taskVideoUpload.snapshotChanges().pipe(
           finalize(() => {
-            this.picture_path = fileRef.getDownloadURL();
+            this.video_path = videoRef.getDownloadURL();
 
-            this.picture_path.subscribe(data => {
-              const dataUpload = this.uploadForm.value;
-              dataUpload.picture = data;
-              this.firebaseService.createGallery(dataUpload)
-              .then(res => {
-                this.successMessage = 'Your gallery has been created';
-                this.errorMessage = '';
-                setTimeout(() => {
-                  this.back.emit(true);
-                }, 2000);
-              }, err => {
-                console.log(err);
-                this.successMessage = '';
-                this.errorMessage = err.message;
-              });
+            this.video_path.subscribe(dataVideo => {
+
+              if (this.audio_upload) {
+                const audioPath = 'audio_test/' + this.audio_upload.name;
+                const audioRef = this.firebaseStorage.ref(audioPath);
+                const taskAudioUpload = this.firebaseStorage.upload(audioPath, this.audio_upload);
+
+                taskAudioUpload.snapshotChanges().pipe(
+                  finalize(() => {
+                    this.audio_path = audioRef.getDownloadURL();
+
+                    this.audio_path.subscribe(dataAudio => {
+                      if (this.picture_upload) {
+                        const filePath = 'images_test/' + this.picture_upload.name;
+                        const fileRef = this.firebaseStorage.ref(filePath);
+                        const task = this.firebaseStorage.upload(filePath, this.picture_upload);
+
+                        task.snapshotChanges().pipe(
+                          finalize(() => {
+                            this.picture_path = fileRef.getDownloadURL();
+
+                            this.picture_path.subscribe(data => {
+                              const dataUpload = this.uploadForm.value;
+                              dataUpload.picture = data;
+                              dataUpload.video = dataVideo;
+                              dataUpload.audio = dataAudio;
+                              this.firebaseService.createGallery(dataUpload)
+                                .then(res => {
+                                  this.successMessage = 'Your gallery has been created';
+                                  this.errorMessage = '';
+                                  setTimeout(() => {
+                                    this.back.emit(true);
+                                  }, 2000);
+                                }, err => {
+                                  console.log(err);
+                                  this.successMessage = '';
+                                  this.errorMessage = err.message;
+                                });
+                            });
+                          })
+                        )
+                          .subscribe();
+                      } else {
+                        this.submitted = false;
+                        this.successMessage = '';
+                        this.errorMessage = 'Picture is required!';
+                      }
+                    });
+                  })
+                ).subscribe();
+              }
             });
           })
-        )
-      .subscribe();
-      } else {
-        this.submitted = false;
-        this.successMessage = '';
-        this.errorMessage = 'Picture is required!';
+        ).subscribe();
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
 import { FirebaseService } from 'src/app/firebase.service';
 
 @Component({
@@ -11,7 +11,10 @@ export class DetailGalleryComponent implements OnInit {
 
   @Input() id: string;
 
+  @ViewChild('video_vehicle') video: ElementRef;
+
   vehicle: any;
+  showVideo = false;
 
   constructor(
     private firebaseService: FirebaseService
@@ -19,6 +22,17 @@ export class DetailGalleryComponent implements OnInit {
 
   ngOnInit() {
     this.showGallery(this.id);
+  }
+
+  playVideo() {
+    this.showVideo = true;
+    const self = this;
+
+    setTimeout(() => {
+      this.video.nativeElement.onended = function() {
+        self.showVideo = false;
+      };
+    }, 2000);
   }
 
   showGallery(id) {

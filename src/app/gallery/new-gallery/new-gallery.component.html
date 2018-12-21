@@ -36,6 +36,24 @@
             <div *ngIf="fup.picture.errors.required">Picture Upload is required.</div>
           </div>
         </div>
+
+        <div class="form-group">
+          <label>Video Upload</label>
+          <input type="file" id="video" formControlName="video" class="form-control-file" accept="video/*, video/x-matroska" (change)="uploadVideoEvent($event)"
+            [ngClass]="{ 'is-invalid': submitted && fup.video.errors }">
+          <div *ngIf="submitted && fup.video.errors" class="invalid-feedback">
+            <div *ngIf="fup.video.errors.required">Video Upload is required.</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Audio Upload</label>
+          <input type="file" id="audio" formControlName="audio" class="form-control-file" accept="audio/*, audio/x-matroska"
+            (change)="uploadAudioEvent($event)" [ngClass]="{ 'is-invalid': submitted && fup.audio.errors }">
+          <div *ngIf="submitted && fup.audio.errors" class="invalid-feedback">
+            <div *ngIf="fup.audio.errors.required">Audio Upload is required.</div>
+          </div>
+        </div>
         
         <label class="error">{{errorMessage}}</label>
         <label class="success">{{successMessage}}</label>
